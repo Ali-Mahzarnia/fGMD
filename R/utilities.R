@@ -1,14 +1,4 @@
-######################################################################
-## These functions are minor modifications or directly copied from the
-## glmnet package:
-##        Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
-## Regularization Paths for Generalized Linear Models via Coordinate
-#   Descent.
-##        Journal of Statistical Software, 33(1), 1-22.
-##        URL http://www.jstatsoft.org/v33/i01/.
-## The reason they are copied here is because they are internal functions
-## and hence are not exported into the global environment.
-## The original comments and header are preserved.
+
 
 err <- function(n, maxit, pmax) {
     if (n == 0) 
@@ -20,7 +10,7 @@ err <- function(n, maxit, pmax) {
         if (n == 10000) 
             msg <- "All penalty factors are <= 0"
         n <- 1
-        msg <- paste("in gglasso fortran code -", msg)
+        msg <- paste("in fGMD fortran code -", msg)
     }
     if (n < 0) {
         #non fatal error
@@ -33,7 +23,7 @@ err <- function(n, maxit, pmax) {
                 pmax, " at ", -n - 10000, "th lambda value; solutions for larger lambdas returned", 
                 sep = "")
         n <- -1
-        msg <- paste("from gglasso fortran code -", msg)
+        msg <- paste("from fGMD fortran code -", msg)
     }
     list(n = n, msg = msg)
 }

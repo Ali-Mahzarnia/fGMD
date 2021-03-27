@@ -1,83 +1,9 @@
-#' Cross-validation for gglasso
-#' 
-#' Does k-fold cross-validation for gglasso, produces a plot, and returns a
-#' value for \code{lambda}. This function is modified based on the \code{cv}
-#' function from the \code{glmnet} package.
-#' 
-#' The function runs \code{\link{gglasso}} \code{nfolds}+1 times; the first to
-#' get the \code{lambda} sequence, and then the remainder to compute the fit
-#' with each of the folds omitted. The average error and standard deviation
-#' over the folds are computed.
-#' 
-#' @aliases cv.gglasso cv.ls cv.logit cv.hsvm cv.sqsvm
-#' @param x matrix of predictors, of dimension \eqn{n \times p}{n*p}; each row
-#' is an observation vector.
-#' @param y response variable. This argument should be quantitative for
-#' regression (least squares), and a two-level factor for classification
-#' (logistic model, huberized SVM, squared SVM).
-#' @param group a vector of consecutive integers describing the grouping of the
-#' coefficients (see example below).
-#' @param lambda optional user-supplied lambda sequence; default is
-#' \code{NULL}, and \code{\link{gglasso}} chooses its own sequence.
-#' @param pred.loss loss to use for cross-validation error. Valid options are:
-#' \itemize{ \item \code{"loss"} for classification, margin based loss
-#' function.  \item \code{"misclass"} for classification, it gives
-#' misclassification error.  \item \code{"L1"} for regression, mean square
-#' error used by least squares regression \code{loss="ls"}, it measure the
-#' deviation from the fitted mean to the response.  \item \code{"L2"} for
-#' regression, mean absolute error used by least squares regression
-#' \code{loss="ls"}, it measure the deviation from the fitted mean to the
-#' response.  } Default is \code{"loss"}.
-#' @param nfolds number of folds - default is 5. Although \code{nfolds} can be
-#' as large as the sample size (leave-one-out CV), it is not recommended for
-#' large datasets. Smallest value allowable is \code{nfolds=3}.
-#' @param foldid an optional vector of values between 1 and \code{nfold}
-#' identifying what fold each observation is in. If supplied, \code{nfold} can
-#' be missing.
-#' @param delta parameter \eqn{\delta}{delta} only used in huberized SVM for
-#' computing log-likelihood on validation set, only available with
-#' \code{pred.loss = "loss"}, \code{loss = "hsvm"}.
-#' @param \dots other arguments that can be passed to gglasso.
-#' @return an object of class \code{\link{cv.gglasso}} is returned, which is a
-#' list with the ingredients of the cross-validation fit.  \item{lambda}{the
-#' values of \code{lambda} used in the fits.} \item{cvm}{the mean
-#' cross-validated error - a vector of length \code{length(lambda)}.}
-#' \item{cvsd}{estimate of standard error of \code{cvm}.} \item{cvupper}{upper
-#' curve = \code{cvm+cvsd}.} \item{cvlower}{lower curve = \code{cvm-cvsd}.}
-#' \item{name}{a text string indicating type of measure (for plotting
-#' purposes).} \item{gglasso.fit}{a fitted \code{\link{gglasso}} object for the
-#' full data.} \item{lambda.min}{The optimal value of \code{lambda} that gives
-#' minimum cross validation error \code{cvm}.} \item{lambda.1se}{The largest
-#' value of \code{lambda} such that error is within 1 standard error of the
-#' minimum.}
-#' @author Yi Yang and Hui Zou\cr Maintainer: Yi Yang <yi.yang6@@mcgill.ca>
-#' @seealso \code{\link{gglasso}}, \code{\link{plot.cv.gglasso}},
-#' \code{\link{predict.cv.gglasso}}, and \code{\link{coef.cv.gglasso}} methods.
-#' @references Yang, Y. and Zou, H. (2015), ``A Fast Unified Algorithm for
-#' Computing Group-Lasso Penalized Learning Problems,'' \emph{Statistics and
-#' Computing}. 25(6), 1129-1141.\cr BugReport:
-#' \url{https://github.com/emeryyi/gglasso}\cr
-#' @keywords models regression
-#' @examples
-#' 
-#' # load gglasso library
-#' library(gglasso)
-#' 
-#' # load data set
-#' data(bardet)
-#' 
-#' # define group index
-#' group <- rep(1:20,each=5)
-#' 
-#' # 5-fold cross validation using group lasso 
-#' # penalized logisitic regression
-#' cv <- cv.gglasso(x=bardet$x, y=bardet$y, group=group, loss="ls",
-#' pred.loss="L2", lambda.factor=0.05, nfolds=5)
 #' 
 #' @export
-cv.gglasso <- function(x, y, group, lambda = NULL, pred.loss = c("misclass", 
-    "loss", "L1", "L2"), nfolds = 5, foldid, delta, ...) {
-    if (missing(pred.loss)) 
+cv.fGMD <- function(x, y, group,alpha, GGder, lambdader ,lambda = NULL, pred.loss = c("misclass", 
+    "loss", "L1", "L2"), nfolds = 5, foldid, delta, lambda.factor,
+    nlambda,nfolder,nalpha,nlamder,lamdermin, lamdermax,alphamin, alphamax,  ...) {
+       if (missing(pred.loss)) 
         pred.loss <- "default" else pred.loss <- match.arg(pred.loss)
     N <- nrow(x)
     ###Fit the model once to get dimensions etc of output
@@ -86,8 +12,172 @@ cv.gglasso <- function(x, y, group, lambda = NULL, pred.loss = c("misclass",
         delta <- 1
     if (delta < 0) 
         stop("delta must be non-negtive")
-    gglasso.object <- gglasso(x, y, group, lambda = lambda, delta = delta, ...)
-    lambda <- gglasso.object$lambda
+    #########################
+    
+    
+        
+
+    if ( is.null(alpha) | is.null(lambdader) )
+    {    
+        
+      if( !is.null(alpha) | !is.null(lambdader))   {par(mfrow=c(1,1))} else {par(mfrow=c(1,2))}
+        
+    bn <- as.integer(max(group))
+    bs <- as.integer(as.numeric(table(group)))
+    ix <- rep(NA, bn)
+    iy <- rep(NA, bn)
+    j <- 1
+    for (g in 1:bn) {
+        ix[g] <- j
+        iy[g] <- j + bs[g] - 1
+        j <- j + bs[g]
+    }
+    ix <- as.integer(ix)
+    iy <- as.integer(iy)
+    maximlam=0
+    vl=y%*%x;
+    for( g in 1:bn )
+    {
+        tem = vl[ix[g]:iy[g]]
+        maximlam = max(MFSGrp::normcpp(tem, diag(1)), maximlam)
+    }
+    #print(lambda.factor)
+    maximlam=maximlam/length(y)
+    lam=exp(seq(log(maximlam),log(lambda.factor*maximlam), length.out=10))
+    #print(lam)
+    
+    
+    
+    #nfolder=3
+    foldider <- sample(rep(seq(nfolder), length = N))
+    
+    #############################
+    
+    if(is.null(lambdader))
+    {
+        if (is.null(alpha)) {alp=0;} else {alp=alpha}
+        #lam=(1-alp)*lam
+        lambdaders=exp(seq(log(lamdermin), log(lamdermax),len=nlamder))
+        #lambdaders=append(0, lambdaders)
+        #nlamder=nlamder+1
+        #nlamder=10
+        lambdadersmse=rep(NA, nlamder)
+        systimes=rep(NA, nlamder)
+    
+    
+    
+    for (j in seq(nlamder)) 
+    {          start_time <- Sys.time()
+          outlister <- as.list(seq(nfolder))
+        for (i in seq(nfolder)) {
+            cat("       of lambdas of ", length(lam), " in ",i,"th fold of ", nfolder ," for the ", j, "th lambdader of", nlamder  , "\r" )
+            which <- foldider == i
+            y_sub <- y[!which]
+            outlister[[i]] <- fGMD(x = x[!which, , drop = FALSE],alpha=alp,GGder=GGder,lambdader=lambdaders[j], y = y_sub, group = group, 
+                                      lambda = lam, delta = delta,lambda.factor, ...)
+
+            #print(outlister[[i]])
+        }
+  
+        cvstuffer= cv.ls(outlister, lam, x, y, foldider, pred.loss, delta) 
+        cvmer <- cvstuffer$cvm
+        #print(min(cvstuffer$cvm))
+        #cat(j, "\n")
+        #cat(lambdaders[j])
+        systimes[j]=Sys.time()-start_time
+        lambdadersmse[j]=(min(cvmer))
+    }
+
+#print(lambdadersmse)
+#print(lambdaders)
+#print(systimes)
+       # lamders[1]=exp(-50)
+plot(y=lambdadersmse, x=log(lambdaders )) 
+chose= which(lambdadersmse==min(lambdadersmse) )[1]
+#print(chose[1])
+lambdader=min(lambdaders[chose])
+#lambdader=5e-4
+#cat(systimes[chose[1]])
+ET=nfolds*nlambda*systimes[chose]/(nfolder*nlamder)
+#cat(systimes[chose], "\n")
+cat("\r        Chosen lambdader is", lambdader, "and Maximum Estimated Time:",  ET  ," seconds           \r \n" )
+#stop("here")
+    
+    }
+   ############################### 
+    
+   
+    if(is.null(alpha))
+    {
+        
+        #nalpha=9
+        alphasmse=rep(NA, nalpha)
+        nalphaseq=nalpha+2
+        alphas=seq(alphamin, alphamax, len=nalphaseq )[-c(1,nalphaseq)]
+        #alphas=seq(0.1,0.9, len=nalpha )
+        systimes=rep(NA, nalpha)
+        
+        
+        for (j in seq(nalpha)) 
+        {          start_time <- Sys.time()
+        outlister <- as.list(seq(nfolder))
+        for (i in seq(nfolder)) {
+            cat("       of lambdas of ", length(lam), " in ",i,"th fold of ", nfolder ," for the ", j, "th alpha of", nalpha  , "\r" )
+            which <- foldider == i
+            y_sub <- y[!which]
+            outlister[[i]] <- fGMD(x = x[!which, , drop = FALSE],alpha=alphas[j],GGder=GGder,lambdader=lambdader, y = y_sub, group = group, 
+                                      lambda = lam, delta = delta,lambda.factor, ...)
+            
+            #print(outlister[[i]])
+        }
+        
+        cvstuffer= cv.ls(outlister, lam, x, y, foldider, pred.loss, delta) 
+        cvmer <- cvstuffer$cvm
+        #print(min(cvstuffer$cvm))
+        #cat(j, "\n")
+        #cat(lambdaders[j])
+        systimes[j]=Sys.time()-start_time
+        alphasmse[j]=(min(cvmer))
+        }
+        
+        #print(lambdadersmse)
+        #print(lambdaders)
+        #print(systimes)
+        
+        plot(y=alphasmse, x=alphas )
+        chose= which(alphasmse==min(alphasmse) )[1]
+        #print(chose[1])
+        alpha=min(alphas[chose])
+        #lambdader=5e-4
+        #cat(systimes[chose[1]])
+        ET=nfolds*nlambda*systimes[chose]/(nfolder*nalpha)
+        #cat(systimes[chose], "\n")
+        cat("\r        Chosen alpha is", alpha, "and Maximum Estimated Time:",  ET  ," seconds                    \r \n" )
+        #stop("here")
+        
+    }
+    ############################### 
+    
+    
+    
+     
+    
+    
+    }  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ######################
+    
+    fGMD.object <- fGMD(x, y, group,alpha=alpha, GGder=GGder,lambdader=lambdader,lambda = lambda, delta = delta, lambda.factor=lambda.factor,nlambda=nlambda, ...)
+    lambda <- fGMD.object$lambda
+    #print(lambda)
     # predict -> coef
     if (missing(foldid)) 
         foldid <- sample(rep(seq(nfolds), length = N)) else nfolds <- max(foldid)
@@ -96,22 +186,23 @@ cv.gglasso <- function(x, y, group, lambda = NULL, pred.loss = c("misclass",
     outlist <- as.list(seq(nfolds))
     ###Now fit the nfold models and store them
     for (i in seq(nfolds)) {
+        cat("       of lambdas out of ", length(lambda), " grid points in the ", i,"th fold of ",nfolds," folds. ",  "\r")
         which <- foldid == i
         y_sub <- y[!which]
-        outlist[[i]] <- gglasso(x = x[!which, , drop = FALSE], y = y_sub, group = group, 
-            lambda = lambda, delta = delta, ...)
+        outlist[[i]] <- fGMD(x = x[!which, , drop = FALSE],alpha=alpha,GGder=GGder,lambdader=lambdader, y = y_sub, group = group, 
+            lambda = lambda, delta = delta,lambda.factor=lambda.factor,nlambda=nlambda, ...)
     }
     ###What to do depends on the pred.loss and the model fit
-    fun <- paste("cv", class(gglasso.object)[[2]], sep = ".")
+    fun <- paste("cv", class(fGMD.object)[[2]], sep = ".")
     cvstuff <- do.call(fun, list(outlist, lambda, x, y, foldid, pred.loss, delta))
     cvm <- cvstuff$cvm
     cvsd <- cvstuff$cvsd
     cvname <- cvstuff$name
     out <- list(lambda = lambda, cvm = cvm, cvsd = cvsd, cvupper = cvm + cvsd, 
-        cvlo = cvm - cvsd, name = cvname, gglasso.fit = gglasso.object)
+        cvlo = cvm - cvsd, name = cvname, fGMD.fit = fGMD.object)
     lamin <- getmin(lambda, cvm, cvsd)
     obj <- c(out, as.list(lamin))
-    class(obj) <- "cv.gglasso"
+    class(obj) <- "cv.fGMD"
     obj
 }
 

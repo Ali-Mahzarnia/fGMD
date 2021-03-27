@@ -1,30 +1,23 @@
-Package: gglasso
-Title: Group Lasso Penalized Learning Using a Unified BMD Algorithm
-Version: 1.5
-Date: 2020-3-01
+Package: fGMD
+Title: A modified version of gglasso to fit the MFSGrp package
+Version: 1.0.0
+Date: 2021-3-22
 Authors@R: c(
-  person("Yi", "Yang", email = "yi.yang6@mcgill.ca",
-  role = c("aut", "cre"), comment = "http://www.math.mcgill.ca/yyang/"),
-  person("Hui", "Zou", email = "hzou@stat.umn.edu",
-  role = c("aut"), comment = "http://users.stat.umn.edu/~zouxx019/"),
-  person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
-  role = c("aut"), comment = "http://sahirbhatnagar.com/")
+  person("Ali", "Mahzarnia", email = "amahzarn@uncc.edu",
+  role = c("aut", "cre"), comment = "https://math.uncc.edu/directory/ali-mahzarnia"),
+  person("Jun", "Song", email = "jsong19@uncc.edu",
+  role = c("aut"), comment = "http://www.jsong.net/")
   )
-Maintainer: Yi Yang <yi.yang6@mcgill.ca>
-Description: A unified algorithm, blockwise-majorization-descent (BMD), for efficiently computing the solution paths of the group-lasso penalized least squares, logistic regression, Huberized SVM and squared SVM. The package is an implementation of Yang, Y. and Zou, H. (2015) DOI: <doi:10.1007/s11222-014-9498-5>.
+Maintainer: Ali Mahzarnia <amahzarn@uncc.edu>
+Description:  This package is created exclusively for MFSGrp package. This package is a heavily modified version of gglasso that was initiated by Yang, Y. and Zou, H. (2015). The features added to the original package: mixing parameter alpha and its net search cross validation, curvature penalizing for functional regression and its net search cross-validation, optimized Fortran core function to speed up the curvature penalization updates, progress reports and time estimations. This package does not work independently from the MFSGrp package and it does not interfere with the functions of gglasso package due to slight name differences.
 License: GPL-2
 Imports: methods
-URL: https://github.com/emeryyi/gglasso
-BugReports: https://github.com/emeryyi/gglasso/issues
-Packaged: 2020-03-18 05:48:51 UTC; yiyang
 Repository: CRAN
-Date/Publication: 2020-03-18 07:00:08 UTC
 RoxygenNote: 7.0.2
 Suggests: testthat, knitr, rmarkdown
 Encoding: UTF-8
 LazyData: TRUE
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Author: Yi Yang [aut, cre] (http://www.math.mcgill.ca/yyang/),
-  Hui Zou [aut] (http://users.stat.umn.edu/~zouxx019/),
-  Sahir Bhatnagar [aut] (http://sahirbhatnagar.com/)
+Author: Ali Mahzarnia [aut, cre] (https://math.uncc.edu/directory/ali-mahzarnia),
+  Jun Song [aut] (http://www.jsong.net/)
