@@ -5,10 +5,10 @@ This package is created exclusively for MFSGrp package. This package is a heavil
 
 ## Installation
 
-You can install the development version of `gglasso` from [GitHub](https://github.com/Ali-Mahzarnia/fGMD) with:
+You can install   of `gglasso` from [GitHub](https://github.com/Ali-Mahzarnia/fGMD) with:
 
 ```R
-install.packages("pacman")
-pacman::p_install_gh("emeryyi/gglasso")
+install.packages("https://github.com/Ali-Mahzarnia/fGMD/blob/master/fGMD_1.0.tar.gz",  repos = NULL, type="source")
+
 ```
 
