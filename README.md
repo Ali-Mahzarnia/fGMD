@@ -8,7 +8,7 @@ This package is created exclusively for MFSGrp package. This package is a heavil
 You can install   of `gglasso` from [GitHub](https://github.com/Ali-Mahzarnia/fGMD) with:
 
 ```R
-install.packages("https://github.com/Ali-Mahzarnia/fGMD/blob/master/fGMD_1.0.tar.gz",  repos = NULL, type="source")
+install.packages("https://github.com/Ali-Mahzarnia/fGMD/blob/master/fGMD_1.0.tar.gz?raw=true",  repos = NULL, type="source")
 
 ```
 
