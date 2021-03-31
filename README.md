@@ -7,8 +7,8 @@ This package is created exclusively for [MFSGrp](https://github.com/Ali-Mahzarni
 
 You can install this packege, `fGMD` from [GitHub](https://github.com/Ali-Mahzarnia/fGMD) with the R code:
 
-```R
-install.packages("https://github.com/Ali-Mahzarnia/fGMD/raw/master/fGMD_1.0.tar.gz",  repos = NULL, type="source")
+```
+install.packages("https://github.com/Ali-Mahzarnia/fGMD/archive/master.tar.gz", repos = NULL, type="source")
 
 ```
 
