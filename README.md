@@ -13,3 +13,7 @@ Alternatively the development version of `fGMD` can be installed with R code:
 install.packages("pacman")
 pacman::p_install_gh("Ali-Mahzarnia/fGMD")
 ```
+If the instalation fails with the above methods install from the source file:
+``` R
+install.packages("https://github.com/Ali-Mahzarnia/fGMD/raw/master/fGMD_1.0.tar.gz",  repos = NULL, type="source")
+```
