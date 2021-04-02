@@ -1,6 +1,5 @@
 language: r
 r:
-  - release
   - devel
 sudo: false
 cache: packages
@@ -9,6 +8,7 @@ r_packages:
   - knitr
   - devtools
   - methods
+warnings_are_errors: false
 
 after_success:
   - Rscript -e 'covr::codecov()'
