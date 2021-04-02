@@ -1,6 +1,7 @@
 language: r
 r:
-  - devel
+  - release
+cache: packages
 
 r_packages:
   - knitr
