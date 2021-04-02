@@ -2,11 +2,15 @@ language: r
 r:
   - release
   - devel
+sudo: false
 
 r_packages:
   - knitr
   - devtools
   - methods
+
+after_success:
+  - Rscript -e 'covr::codecov()'
 
 notifications:
   email:
