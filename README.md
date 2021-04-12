@@ -10,7 +10,7 @@ You can install this package, `fGMD` from [GitHub](https://github.com/Ali-Mahzar
 install.packages("https://github.com/Ali-Mahzarnia/fGMD/archive/master.tar.gz", repos = NULL, type="source")
 ```
 ## Development version:
-Alternatively, the development version of `fGMD` can be installed the R command:
+Alternatively, the development version of `fGMD` can be installed with the R command:
 ``` R
 install.packages("pacman")
 pacman::p_install_gh("Ali-Mahzarnia/fGMD")
