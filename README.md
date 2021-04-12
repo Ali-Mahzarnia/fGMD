@@ -9,13 +9,13 @@ You can install this package, `fGMD` from [GitHub](https://github.com/Ali-Mahzar
 ``` R
 install.packages("https://github.com/Ali-Mahzarnia/fGMD/archive/master.tar.gz", repos = NULL, type="source")
 ```
-## Development version:
+## Development version
 Alternatively, the development version of `fGMD` can be installed with the R command:
 ``` R
 install.packages("pacman")
 pacman::p_install_gh("Ali-Mahzarnia/fGMD")
 ```
-## Installation from source file
+## Installation from the source file
 If the installation fails with the above methods, install the package from the source file:
 ``` R
 install.packages("https://github.com/Ali-Mahzarnia/fGMD/raw/master/fGMD_1.0.tar.gz",  repos = NULL, type="source")
